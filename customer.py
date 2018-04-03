@@ -55,6 +55,7 @@ class Knn:
                
 Knn.initialize()
 Knn.readFromFile('trainProdSelection.arff')
+
 for i in range(len(Knn.listTrainCustomer)):
     t = Knn.listTrainCustomer[i]
     print('before:')
