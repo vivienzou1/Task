@@ -88,7 +88,11 @@ def predict_label(sample, root):
             # print "go to < " + str(root)
     else:
         # print(root)
-        root = root[sample[features_global.index(index)]]
+        if sample[features_global.index(index)] in root.keys():
+            root = root[sample[features_global.index(index)]]
+        else:
+
+            root = root[root.keys()[0]]
     # print index + " is " + sample[features_copy.index(index)]
     return predict_label(sample, root)
 
