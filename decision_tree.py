@@ -74,12 +74,15 @@ def predict_label(sample, root):
     keys = root.keys()
 
     if keys[0].startswith('<') or keys[0].startswith('>='):
-        breakpoint = keys[0].split(' ')[1]
+        breakpoint = keys[0].split(' ')[-1]
         print breakpoint
-        if sample[features_copy.index(index)] >= float(breakpoint):
+        print sample[features_copy.index(index)]
+        if float(sample[features_copy.index(index)]) >= float(breakpoint):
             root = root['>= ' + breakpoint]
+            print "go to >= " + str(root)
         else:
             root = root['< ' + breakpoint]
+            print "go to < " + str(root)
     else:
         root = root[sample[features_copy.index(index)]]
     print index + " is " + sample[features_copy.index(index)]
