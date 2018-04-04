@@ -7,12 +7,15 @@ import json
 import sys
 
 features_global = []
+performance = []
+k = 10
 
 def loadData(file_path):
     dataset = []
     features = []
     feature_continuous = []
     feature_continuous_global = []
+
 
     with open(file_path, 'rb') as f:
         for line in f.readlines():
@@ -192,7 +195,7 @@ def cross_validation(k, dataset):
     # a tree on the train set, then validate it with the test set
     # mark down the correct rate
     test_size = len(dataset_copy) / k
-    performance = []
+    # performance = []
     for i in range(1, k + 1):
         # prepare the train and test set
         test_set = dataset_copy[test_size * (i - 1):test_size * i]
@@ -228,6 +231,7 @@ def cross_validation(k, dataset):
         print (performance)
 
     print sum(performance) / float(k)
+
 if __name__ == "__main__":
     # file_path = sys.argv[1]
     file_path = "trainProdSelection.arff"
@@ -248,3 +252,7 @@ if __name__ == "__main__":
     # sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff")
     # for row in sample_data_set:
     #     print "The prediction of " + str(row) + " is " + predict_label(row, tree)
+
+    f = open('result.txt','w')
+    f.write('Total '+str(k)+' folds ross validation:\n'+ str(performance)+'\n' + 'Average Correct Rate : '+ str(sum(performance) / float(k)))
+    f.close()  # you can omit in most cases as the destructor will call it
