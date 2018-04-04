@@ -1,11 +1,12 @@
 # !/usr/bin/python
 from math import log
+from random import shuffle
 import operator
 import random
 import json
 import sys
 
-features_copy = []
+features_global = []
 
 def loadData(file_path):
     dataset = []
@@ -74,19 +75,20 @@ def predict_label(sample, root):
     root = root[index]
     keys = root.keys()
 
-    if keys[0].startswith('<') or keys[0].startswith('>='):
+    if feature_continuous_global[features_global.index(index)]:
         breakpoint = keys[0].split(' ')[-1]
         # print breakpoint
-        print index
-        print features_copy
-        if float(sample[features_copy.index(index)]) >= float(breakpoint):
+        # print index
+        # print features_global
+        if float(sample[features_global.index(index)]) >= float(breakpoint):
             root = root['>= ' + breakpoint]
             # print "go to >= " + str(root)
         else:
             root = root['< ' + breakpoint]
             # print "go to < " + str(root)
     else:
-        root = root[sample[features_copy.index(index)]]
+        # print(root)
+        root = root[sample[features_global.index(index)]]
     # print index + " is " + sample[features_copy.index(index)]
     return predict_label(sample, root)
 
@@ -177,58 +179,68 @@ def majorityCnt(labels):
 
 def cross_validation(k, dataset):
     # shuffle
-
-
+    print(len(dataset))
+    dataset_copy = dataset[:]
+    shuffle(dataset_copy)
+    for e in dataset_copy:
+        print e
     # for 1 to k, each time pick a test set at size len / k. build
     # a tree on the train set, then validate it with the test set
     # mark down the correct rate
-    test_size = len(dataset) / k
+    test_size = len(dataset_copy) / k
     performance = []
-    for i in range(1, k):
+    for i in range(1, k + 1):
         # prepare the train and test set
-        test_set = dataset[test_size * (i - 1):test_size * i]
-        print(test_set)
+        test_set = dataset_copy[test_size * (i - 1):test_size * i]
+        # print(test_set)
         print(len(test_set))
         train_set = []
-        for j in range(0, len(dataset)):
+        for j in range(0, len(dataset_copy)):
             if j < test_size * (i - 1) or j >= test_size * i:
-                train_set.append(dataset[j])
-        print(train_set)
-        print(features_copy)
-        print(feature_continuous_global)
+                train_set.append(dataset_copy[j])
+        print(len(train_set))
+        # print(features_global)
+        # print(feature_continuous_global)
 
         # build the tree
-        tree = generateTree(train_set, features, feature_continuous_global)
+        features_copy = features_global[:]
+        features_continuous_copy = feature_continuous_global[:]
+        tree = generateTree(train_set, features_copy, features_continuous_copy)
+        print json.dumps(tree, indent=4)
 
         # validate the tree
         count = 0
         for row in test_set:
             label = predict_label(row, tree)
+            print("predicted lable is " + label + " and actual lable is " + row[-1])
+            print(label == row[-1])
             if label == row[-1]:
-                count += 1
-        correct_rate = count / test_size
+                count = count + 1
+        print count
+        print test_size
+        correct_rate = (count * 1.0 / test_size)
         performance.append(correct_rate)
-        print "the correct rate of " + i + "th CV is " + correct_rate
-        print(performance)
+        print "the correct rate of " + str(i) + "th CV is " + str(correct_rate)
+        print (performance)
 
+    print sum(performance) / float(k)
 if __name__ == "__main__":
     # file_path = sys.argv[1]
     file_path = "trainProdSelection.arff"
     dataset, features, feature_continuous = loadData(file_path)
-    features_copy = features[:]
+    dataset_global = dataset[:]
+    features_global = features[:]
     feature_continuous_global = feature_continuous[:]
 
-    print "Loaded dataset: " + str(dataset) + '\n'
-    print "features: " + str(features) + '\n'
-    print "feature_continuous: " + str(feature_continuous) + '\n'
+    # print "Loaded dataset: " + str(dataset) + '\n'
+    # print "features: " + str(features) + '\n'
+    # print "feature_continuous: " + str(feature_continuous) + '\n'
+    #
+    # tree = generateTree(dataset, features, feature_continuous)
+    # print(dataset)
+    # print json.dumps(tree, indent=4)
 
-    tree = generateTree(dataset, features, feature_continuous)
-
-    print json.dumps(tree, indent=4)
-
-    cross_validation(5, dataset)
-
-
-    # sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff");
+    cross_validation(10, dataset_global)
+    # sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff")
     # for row in sample_data_set:
     #     print "The prediction of " + str(row) + " is " + predict_label(row, tree)
