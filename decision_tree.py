@@ -11,6 +11,7 @@ def loadData(file_path):
     dataset = []
     features = []
     feature_continuous = []
+    feature_continuous_global = []
 
     with open(file_path, 'rb') as f:
         for line in f.readlines():
@@ -75,17 +76,18 @@ def predict_label(sample, root):
 
     if keys[0].startswith('<') or keys[0].startswith('>='):
         breakpoint = keys[0].split(' ')[-1]
-        print breakpoint
-        print sample[features_copy.index(index)]
+        # print breakpoint
+        print index
+        print features_copy
         if float(sample[features_copy.index(index)]) >= float(breakpoint):
             root = root['>= ' + breakpoint]
-            print "go to >= " + str(root)
+            # print "go to >= " + str(root)
         else:
             root = root['< ' + breakpoint]
-            print "go to < " + str(root)
+            # print "go to < " + str(root)
     else:
         root = root[sample[features_copy.index(index)]]
-    print index + " is " + sample[features_copy.index(index)]
+    # print index + " is " + sample[features_copy.index(index)]
     return predict_label(sample, root)
 
 
@@ -173,12 +175,49 @@ def majorityCnt(labels):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
 
+def cross_validation(k, dataset):
+    # shuffle
+
+
+    # for 1 to k, each time pick a test set at size len / k. build
+    # a tree on the train set, then validate it with the test set
+    # mark down the correct rate
+    test_size = len(dataset) / k
+    performance = []
+    for i in range(1, k):
+        # prepare the train and test set
+        test_set = dataset[test_size * (i - 1):test_size * i]
+        print(test_set)
+        print(len(test_set))
+        train_set = []
+        for j in range(0, len(dataset)):
+            if j < test_size * (i - 1) or j >= test_size * i:
+                train_set.append(dataset[j])
+        print(train_set)
+        print(features_copy)
+        print(feature_continuous_global)
+
+        # build the tree
+        tree = generateTree(train_set, features, feature_continuous_global)
+
+        # validate the tree
+        count = 0
+        for row in test_set:
+            label = predict_label(row, tree)
+            if label == row[-1]:
+                count += 1
+        correct_rate = count / test_size
+        performance.append(correct_rate)
+        print "the correct rate of " + i + "th CV is " + correct_rate
+        print(performance)
 
 if __name__ == "__main__":
     # file_path = sys.argv[1]
     file_path = "trainProdSelection.arff"
     dataset, features, feature_continuous = loadData(file_path)
     features_copy = features[:]
+    feature_continuous_global = feature_continuous[:]
+
     print "Loaded dataset: " + str(dataset) + '\n'
     print "features: " + str(features) + '\n'
     print "feature_continuous: " + str(feature_continuous) + '\n'
@@ -187,6 +226,9 @@ if __name__ == "__main__":
 
     print json.dumps(tree, indent=4)
 
-    sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff");
-    for row in sample_data_set:
-        print "The prediction of " + str(row) + " is " + predict_label(row, tree)
+    cross_validation(5, dataset)
+
+
+    # sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff");
+    # for row in sample_data_set:
+    #     print "The prediction of " + str(row) + " is " + predict_label(row, tree)
