@@ -1,16 +1,22 @@
 # !/usr/bin/python
 from math import log
+from random import shuffle
 import operator
 import random
 import json
 import sys
+from datetime import datetime
 
-features_copy = []
+features_global = []
+performance = []
+k = 10
 
 def loadData(file_path):
     dataset = []
     features = []
     feature_continuous = []
+    feature_continuous_global = []
+
 
     with open(file_path, 'rb') as f:
         for line in f.readlines():
@@ -73,15 +79,24 @@ def predict_label(sample, root):
     root = root[index]
     keys = root.keys()
 
-    if keys[0].startswith('<') or keys[0].startswith('>='):
+    if feature_continuous_global[features_global.index(index)]:
         breakpoint = keys[0].split(' ')[-1]
-        if sample[features_copy.index(index)] >= float(breakpoint):
-            root = root['< ' + breakpoint]
-        else:
+        # print breakpoint
+        # print index
+        # print features_global
+        if float(sample[features_global.index(index)]) >= float(breakpoint):
             root = root['>= ' + breakpoint]
+            # print "go to >= " + str(root)
+        else:
+            root = root['< ' + breakpoint]
+            # print "go to < " + str(root)
     else:
-        root = root[sample[features_copy.index(index)]]
-    print index + " is " + sample[features_copy.index(index)]
+        # print(root)
+        if sample[features_global.index(index)] in root.keys():
+            root = root[sample[features_global.index(index)]]
+        else:
+            root = root[root.keys()[0]]
+    # print index + " is " + sample[features_copy.index(index)]
     return predict_label(sample, root)
 
 
@@ -169,20 +184,90 @@ def majorityCnt(labels):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
 
+def cross_validation(k, dataset):
+    # shuffle
+    dataset_copy = dataset[:]
+    shuffle(dataset_copy)
+    # for e in dataset_copy:
+    #     print e
+    # for 1 to k, each time pick a test set at size len / k. build
+    # a tree on the train set, then validate it with the test set
+    # mark down the correct rate
+    k = int(k)
+    test_size = len(dataset_copy) / k
+    # performance = []
+    for i in range(1, k + 1):
+        # prepare the train and test set
+        test_set = dataset_copy[test_size * (i - 1):test_size * i]
+        # print(test_set)
+        train_set = []
+        for j in range(0, len(dataset_copy)):
+            if j < test_size * (i - 1) or j >= test_size * i:
+                train_set.append(dataset_copy[j])
+        # print(len(train_set))
+        # print(features_global)
+        # print(feature_continuous_global)
+
+        # build the tree
+        features_copy = features_global[:]
+        features_continuous_copy = feature_continuous_global[:]
+        tree = generateTree(train_set, features_copy, features_continuous_copy)
+        # print json.dumps(tree, indent=4)
+
+        # validate the tree
+        count = 0
+        for row in test_set:
+            label = predict_label(row, tree)
+            # print("predicted lable is " + label + " and actual lable is " + row[-1])
+            # print(label == row[-1])
+            if label == row[-1]:
+                count = count + 1
+        # print count
+        # print test_size
+        correct_rate = (count * 1.0 / test_size)
+        performance.append(correct_rate)
+        # print (performance)
+
+    return sum(performance) / float(k), performance
 
 if __name__ == "__main__":
-    # file_path = sys.argv[1]
-    file_path = "trainProdSelection.arff"
-    dataset, features, feature_continuous = loadData(file_path)
-    features_copy = features[:]
-    print "Loaded dataset: " + str(dataset) + '\n'
-    print "features: " + str(features) + '\n'
-    print "feature_continuous: " + str(feature_continuous) + '\n'
+    # get the command-line argument
+    file_path_train = sys.argv[1]
+    file_path_test = sys.argv[2]
+    k = sys.argv[3]
 
+    # build the tree with complete train set
+    dataset, features, feature_continuous = loadData(file_path_train)
+    dataset_global = dataset[:]
+    features_global = features[:]
+    feature_continuous_global = feature_continuous[:]
+
+    result = "Summary of Result" + "\n"
+    result += "run at " + str(datetime.now()) + "\n\n"
+    result += "====== Built a d-tree on the train set ======\n\n"
+    result += "Loaded train dataset " + file_path_train + '\n'
+    result += "Loaded test dataset " + file_path_test + '\n'
+    result += "features: " + str(features) + '\n'
+    result += "feature_continuous: " + str(feature_continuous) + "\n\n"
     tree = generateTree(dataset, features, feature_continuous)
-
+    # print(datasetset)
     print json.dumps(tree, indent=4)
 
-    sample_data_set, sample_feature, sample_feature_continues = loadData("testProdSelection.arff");
-    for row in sample_data_set:
-        print "The prediction of " + str(row) + " is " + predict_label(row, tree)
+    # predict the test set with the trained model
+    result += "====== Prediction on the test set ======\n\n"
+    test_data_set, test_feature, test_feature_continues = loadData(file_path_test)
+    for row in test_data_set:
+        result += str(row) + " is " + predict_label(row, tree) + '\n'
+    result += '\n'
+
+    # cross-validate the train set with k fold
+    result += "====== " + k + " folds validation on train set ======\n\n"
+    average, performance = cross_validation(k, dataset_global)
+    result += "Correction rate for each time is " + str(performance) + '\n'
+    result += "The average correction rate is " + str(average) + '\n'
+    result += "\n\n"
+
+    # wirte into a file
+    f = open('result.txt','a+')
+    f.write(result)
+    f.close()  # you can omit in most cases as the destructor will call it
