@@ -7,4 +7,4 @@ All model are produced by `numpy` and read by `arff`, no other package related.
 To train the model, we suggested in ipython by jupyter notebook:
 * Run `Knn_Classifier_91%.py`
 
-The global accuracy for the KNN classifier is around 91% to 90.4% depended on convergence degree.
+The global accuracy for the KNN classifier is around 91% to 90.4% depended on convergence degree in hundreds of iteration. 
