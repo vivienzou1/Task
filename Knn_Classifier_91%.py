@@ -1,15 +1,4 @@
-
-# coding: utf-8
-
-# In[6]:
-
-
 import numpy as np
-
-
-# # setting up the Customer type
-
-# In[7]:
 
 
 class Customer:
@@ -37,9 +26,6 @@ class Customer:
 
 
 # # the model
-
-# In[8]:
-
 
 def model(w1, w2, w3, w4, w5, w6):
     class Knn:
@@ -110,9 +96,11 @@ def model(w1, w2, w3, w4, w5, w6):
             normValue = (OriValue - Knn.listTestMin[feaIndex]) / (Knn.listTestMax[feaIndex] - Knn.listTestMin[feaIndex])
             return normValue
 
+        # cross validation 80/20
         def randomSelect():
             #randomly select the 80/20
             train_total = list(Knn.listTrainCustomer)     
+            
             # print(len(train_data)) # 186
             # length with C1 label: 36
             # length with C2 label: 26
@@ -126,15 +114,15 @@ def model(w1, w2, w3, w4, w5, w6):
             return train_model, test_model
             '''
             train_model, test_model, train_C1, train_C2, train_C3, train_C4, train_C5 =[], [], [], [], [], [], []
+            
             copy_train1 = list(train_total[0:36])
             copy_train2 = list(train_total[36:61])
             copy_train3 = list(train_total[62:102])
             copy_train4 = list(train_total[103:149])
             copy_train5 = list(train_total[-36:-1])
+
             train_C1 = np.random.choice(copy_train1,int(29))
-
             train_C2 = np.random.choice(copy_train2,int(21))
-
             train_C3 = np.random.choice(copy_train3,int(34))
             train_C4 = np.random.choice(copy_train4,int(38))
             train_C5 = np.random.choice(copy_train5,int(29))
@@ -147,13 +135,10 @@ def model(w1, w2, w3, w4, w5, w6):
             for row in train_total:
                 if row not in train_model: test_model.append(row)
 
-            #print("1 before",Knn.listTrainCustomer[0])
+            
             Knn.listTrainCustomer = train_model
-            #print("2 after", Knn.listTrainCustomer[0])
+            
             Knn.listTestCustomer = test_model
-
-#             print("test data %:", int(len(train_C1)/36*100))
-
 
 
     Knn.initializeTrain()
@@ -189,8 +174,6 @@ def model(w1, w2, w3, w4, w5, w6):
         tmp_listA.append(Customer(val0, val1, val2, val3, val4, val5, val6))
 
     Knn.listTrainCustomer = list(tmp_listA)
-    # for row in Knn.listTrainCustomer:
-    #     print (row)
 
     tmp_listB = [] 
     for row in Knn.listTestCustomer:
@@ -206,7 +189,6 @@ def model(w1, w2, w3, w4, w5, w6):
     near = []
     # the index of test data
 
-    #print(Knn.listTrainCustomer[t])
     for t in range(len(Knn.listTestCustomer)):
         for j in range(len(Knn.listTrainCustomer)):
 
@@ -234,6 +216,7 @@ def model(w1, w2, w3, w4, w5, w6):
                 a[j].sim = sim_overall
                 sor = sorted(a, key=lambda Customer:Customer.sim, reverse=True)
                 near = sor[0:3]
+
                 C1, C2, C3, C4, C5 = 0,0,0,0,0
                 for n in range(0,3):
                     if near[n].cla == 'C1': 
@@ -246,7 +229,7 @@ def model(w1, w2, w3, w4, w5, w6):
                         C4 += 1
                     if near[n].cla == 'C5': 
                         C5 += 1     
-                #print(C1, C2, C3, C4, C5)
+                
                 highest = max(C1, C2, C3, C4, C5)
                 if highest == C1:
                     Knn.listTestCustomer[t].predC = 'C1'
@@ -264,16 +247,13 @@ def model(w1, w2, w3, w4, w5, w6):
         if row.predC == row.cla:
             count += 1
 
-#     print("count", count)
+
     percentage = count/len(Knn.listTestCustomer)*100
-#     print('percentage is',percentage)
+
     return percentage,w1, w2, w3, w4, w5, w6
 
 
 # # the main method to get the accumulate accuracy
-
-# In[40]:
-
 
 accuracyAcc = 0
 epoch = 200
@@ -297,6 +277,7 @@ for i in range(epoch):
 #     w4 = np.random.uniform(20,1000)
 #     w5 = np.random.uniform(0,400) 
 #     w6 = np.random.uniform(20,500) 
+
     w1, w2, w3, w4, w5, w6 =  38 ,  0.03347663665063675 ,  4 ,  92 ,  22 ,  83
     
     each_percentage, guess_w1, guess_w2, guess_w3, guess_w4, guess_w5, guess_w6 = model(w1, w2, w3, w4, w5, w6)
