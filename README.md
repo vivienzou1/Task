@@ -5,7 +5,7 @@ This repo is working on the KNN classification and regression, as well as decisi
 All model are produced by `numpy` and read by `arff`, no other package related. 
 
 
-======== KNN ============
+## KNN
 
 To train the model, we suggested in ipython by jupyter notebook:
 * Run `Knn_Classifier_91%.py` for KNN Classification
@@ -16,7 +16,7 @@ Cross validation is in 80% for training and 20% testing, from `trainProfSelectio
 The global accuracy for the KNN classifier is around 91% to 90.4% depended on convergence degree, we suggest at least in hundreds of iteration. 
 
 
-===== Decision Tree =====
+## Decision Tree
 
 To run the program, you can:
 1. Use command line:
