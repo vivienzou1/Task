@@ -11,6 +11,8 @@ To train the model, we suggested in ipython by jupyter notebook:
 * Run `Knn_Classifier_91%.py` for KNN Classification
 * Run `decision_tree.py` for Desicion tree Classification
 
+Cross validation is in 80% for training and 20% testing, from `trainProfSelection.arff`; although test code and label prediction is via `testProfSelection.arff`
+
 The global accuracy for the KNN classifier is around 91% to 90.4% depended on convergence degree, we suggest at least in hundreds of iteration. 
 
 
