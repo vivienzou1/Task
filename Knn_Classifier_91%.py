@@ -1,4 +1,15 @@
+
+# coding: utf-8
+
+# In[18]:
+
+
 import numpy as np
+
+
+# # setting up the Customer type
+
+# In[19]:
 
 
 class Customer:
@@ -26,6 +37,9 @@ class Customer:
 
 
 # # the model
+
+# In[20]:
+
 
 def model(w1, w2, w3, w4, w5, w6):
     class Knn:
@@ -96,11 +110,9 @@ def model(w1, w2, w3, w4, w5, w6):
             normValue = (OriValue - Knn.listTestMin[feaIndex]) / (Knn.listTestMax[feaIndex] - Knn.listTestMin[feaIndex])
             return normValue
 
-        # cross validation 80/20
         def randomSelect():
             #randomly select the 80/20
             train_total = list(Knn.listTrainCustomer)     
-            
             # print(len(train_data)) # 186
             # length with C1 label: 36
             # length with C2 label: 26
@@ -114,15 +126,15 @@ def model(w1, w2, w3, w4, w5, w6):
             return train_model, test_model
             '''
             train_model, test_model, train_C1, train_C2, train_C3, train_C4, train_C5 =[], [], [], [], [], [], []
-            
             copy_train1 = list(train_total[0:36])
             copy_train2 = list(train_total[36:61])
             copy_train3 = list(train_total[62:102])
             copy_train4 = list(train_total[103:149])
             copy_train5 = list(train_total[-36:-1])
-
             train_C1 = np.random.choice(copy_train1,int(29))
+
             train_C2 = np.random.choice(copy_train2,int(21))
+
             train_C3 = np.random.choice(copy_train3,int(34))
             train_C4 = np.random.choice(copy_train4,int(38))
             train_C5 = np.random.choice(copy_train5,int(29))
@@ -135,10 +147,12 @@ def model(w1, w2, w3, w4, w5, w6):
             for row in train_total:
                 if row not in train_model: test_model.append(row)
 
-            
             Knn.listTrainCustomer = train_model
-            
-            Knn.listTestCustomer = test_model
+            # the list of test code lacked of label
+            Knn.listRealTestCustomer = Knn.listTestCustomer
+            # the list of cross validation test data with label already
+#             Knn.listTestCustomer = test_model
+
 
 
     Knn.initializeTrain()
@@ -148,7 +162,7 @@ def model(w1, w2, w3, w4, w5, w6):
     Knn.readFromFile_Test('testProdSelection.arff')
 
     Knn.randomSelect()
-
+    
     for i in range(len(Knn.listTrainCustomer)):
         Knn.recordTrainMinMax(2, Knn.listTrainCustomer[i].vacation)
         Knn.recordTrainMinMax(3, Knn.listTrainCustomer[i].eCredit)
@@ -160,6 +174,12 @@ def model(w1, w2, w3, w4, w5, w6):
         Knn.recordTestMinMax(3, Knn.listTestCustomer[i].eCredit)
         Knn.recordTestMinMax(4, Knn.listTestCustomer[i].salary)   
         Knn.recordTestMinMax(5, Knn.listTestCustomer[i].prop)
+        
+    for i in range(len(Knn.listRealTestCustomer)):
+        Knn.recordTestMinMax(2, Knn.listRealTestCustomer[i].vacation)
+        Knn.recordTestMinMax(3, Knn.listRealTestCustomer[i].eCredit)
+        Knn.recordTestMinMax(4, Knn.listRealTestCustomer[i].salary)   
+        Knn.recordTestMinMax(5, Knn.listRealTestCustomer[i].prop)
 
     # normalization
     tmp_listA = []
@@ -174,6 +194,8 @@ def model(w1, w2, w3, w4, w5, w6):
         tmp_listA.append(Customer(val0, val1, val2, val3, val4, val5, val6))
 
     Knn.listTrainCustomer = list(tmp_listA)
+    # for row in Knn.listTrainCustomer:
+    #     print (row)
 
     tmp_listB = [] 
     for row in Knn.listTestCustomer:
@@ -189,6 +211,7 @@ def model(w1, w2, w3, w4, w5, w6):
     near = []
     # the index of test data
 
+    #print(Knn.listTrainCustomer[t])
     for t in range(len(Knn.listTestCustomer)):
         for j in range(len(Knn.listTrainCustomer)):
 
@@ -216,7 +239,6 @@ def model(w1, w2, w3, w4, w5, w6):
                 a[j].sim = sim_overall
                 sor = sorted(a, key=lambda Customer:Customer.sim, reverse=True)
                 near = sor[0:3]
-
                 C1, C2, C3, C4, C5 = 0,0,0,0,0
                 for n in range(0,3):
                     if near[n].cla == 'C1': 
@@ -229,7 +251,7 @@ def model(w1, w2, w3, w4, w5, w6):
                         C4 += 1
                     if near[n].cla == 'C5': 
                         C5 += 1     
-                
+            
                 highest = max(C1, C2, C3, C4, C5)
                 if highest == C1:
                     Knn.listTestCustomer[t].predC = 'C1'
@@ -243,55 +265,93 @@ def model(w1, w2, w3, w4, w5, w6):
                     Knn.listTestCustomer[t].predC = 'C5'
 
     count = 0;
-    for row in Knn.listTestCustomer:
-        if row.predC == row.cla:
-            count += 1
+#     for row in Knn.listTestCustomer:
+#         if row.predC == row.cla:
+#             count += 1
+
+#     print("count", count)
+#     percentage = count/len(Knn.listTestCustomer)*100
+#     print('percentage is',percentage)
+#     return percentage,w1, w2, w3, w4, w5, w6
+    return Knn.listTestCustomer
 
 
-    percentage = count/len(Knn.listTestCustomer)*100
+# # To Train the data
 
-    return percentage,w1, w2, w3, w4, w5, w6
+# In[21]:
 
 
-# # the main method to get the accumulate accuracy
+def train():
+    accuracyAcc = 0
+    epoch = 200
+    max_percentage = 0.0
+    best_w1, best_w2, best_w3, best_w4, best_w5, best_w6 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    for i in range(epoch):
+        w1 = int(np.random.randint(low=0, high=50, size=1))
+        w2 = np.random.random_sample()
+        w3 = int(np.random.randint(low=0, high=50, size=1))
+        w4 = int(np.random.randint(low=20, high=150, size=1))
+        w5 = int(np.random.randint(low=0, high=50, size=1))
+        w6 = int(np.random.randint(low=20, high=100, size=1))
 
-accuracyAcc = 0
-epoch = 200
-max_percentage = 0.0
-best_w1, best_w2, best_w3, best_w4, best_w5, best_w6 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-for i in range(epoch):
-    '''
-    most optimal currently:
-    w1, w2, w3, w4, w5, w6 = 1,0.001,1,25,4,25
-    '''
-#     w1 = int(np.random.randint(low=0, high=50, size=1))
-#     w2 = np.random.random_sample()
-#     w3 = int(np.random.randint(low=0, high=50, size=1))
-#     w4 = int(np.random.randint(low=20, high=150, size=1))
-#     w5 = int(np.random.randint(low=0, high=50, size=1))
-#     w6 = int(np.random.randint(low=20, high=100, size=1))
-    
-#     w1 = np.random.uniform(0,100)
-#     w2 = np.random.random_sample()
-#     w3 = np.random.uniform(0,100) 
-#     w4 = np.random.uniform(20,1000)
-#     w5 = np.random.uniform(0,400) 
-#     w6 = np.random.uniform(20,500) 
+        w4 = np.random.uniform(0,100)
+        w2 = np.random.random_sample()
+        w3 = np.random.uniform(0,100) 
+        w4 = np.random.uniform(20,1000)
+        w5 = np.random.uniform(0,400) 
+        w6 = np.random.uniform(20,500) 
 
-    w1, w2, w3, w4, w5, w6 =  38 ,  0.03347663665063675 ,  4 ,  92 ,  22 ,  83
-    
-    each_percentage, guess_w1, guess_w2, guess_w3, guess_w4, guess_w5, guess_w6 = model(w1, w2, w3, w4, w5, w6)
-    accuracyAcc += each_percentage
-    
-    if each_percentage > max_percentage:
-        max_percentage = each_percentage
-        best_w1,best_w2, best_w3, best_w4, best_w5, best_w6 = guess_w1, guess_w2,         guess_w3, guess_w4, guess_w5, guess_w6      
-    
-averageAcc = accuracyAcc/epoch
-print("average accuracy: ",averageAcc
-print("max percentage: ",max_percentage)
-print("best weights: ",best_w1,", ",best_w2,", ", best_w3,", ", best_w4,", ", best_w5,", ", best_w6)
+        each_percentage, guess_w1, guess_w2, guess_w3, guess_w4, guess_w5, guess_w6 = model(w1, w2, w3, w4, w5, w6)
+        accuracyAcc += each_percentage
 
+        if each_percentage > max_percentage:
+            max_percentage = each_percentage
+            best_w1,best_w2, best_w3, best_w4, best_w5, best_w6 = guess_w1, guess_w2,             guess_w3, guess_w4, guess_w5, guess_w6      
+
+    averageAcc = accuracyAcc/epoch
+    print("average accuracy: ",averageAcc)
+    print("max percentage: ",max_percentage)
+    print("best weights: ",best_w1,", ",best_w2,", ", best_w3,", ", best_w4,", ", best_w5,", ", best_w6)
+
+
+# In[22]:
+
+
+def write_results(classification_result, output_file='predictions.txt'):
+    with open(output_file, 'w') as f:
+        for row in classification_result:
+            f.write('\n'+str(row))
+
+
+# In[23]:
+
+
+def main():
+    # if under train mode:
+    # train()
+
+    w1, w2, w3, w4, w5, w6 = 38 , 0.03347663665063675 , 4 , 92 , 22 , 83
+    classification_result = model(w1, w2, w3, w4, w5, w6)
+
+    write_results(classification_result)
+
+
+# In[24]:
+
+
+main()
+
+
+# #### average accuracy:  77.44215255474278
+# #### best weights:  65.71608485534179 ,  1 ,  1 ,  1 ,  1 ,  1
+
+# #### average accuracy:  77.57041651904352
+# #### best weights:  65.71608485534179 ,  86.85199055850295 ,  1 ,  1 ,  1 ,  1
+
+# #### average accuracy:  74.73992247757633
+# #### best weights:  65.71608485534179 ,  86.85199055850295 ,  69.02819705097116 ,  1 ,  1 ,  1
+
+# # globally random
 
 # #### max percentage:  97.46835443037975
 # #### best weights:  1 ,  0.001 ,  1 ,  25 ,  4 ,  25
