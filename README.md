@@ -19,5 +19,7 @@ The global accuracy for the KNN classifier is around 91% (weighted) to 90.4% (wi
 
 * Run `decision_tree.py` for Desicion tree Classification, you can:
 1. Use command line:
-* Run `python decision_tree.py <path_train_set> <path_test_set> <k_folds_for_cross_validation>`
+```bash
+python decision_tree.py <path_train_set> <path_test_set> <k_folds_for_cross_validation>`
+```
 2. Use IDE and edit run configuration
