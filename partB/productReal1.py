@@ -4,8 +4,8 @@
 Created on Mon Apr  2 13:37:49 2018
 @author: yinchenli
 """
-import numpy as np
 import sys
+import numpy as np
 from random import shuffle
 
 serSwitcher = {"Loan": 0, "Bank_Account": 1, "CD": 2, "Mortgage": 3, "Fund": 4}
@@ -72,7 +72,7 @@ class Knn:
     listTrainCustomer = []
     listTestCustomer = []
     
-    def readFromFile_Train(self,name):
+    def readFromFile_Train(self, name):
         with open(name, "r") as f:         
             for line in f.readlines():
                 if not line.startswith("@") and ',' in line:
@@ -87,9 +87,10 @@ class Knn:
                     period = float(array[7])
                     label = float(array[8].strip())
                     Knn.listTrainCustomer.append(Product(ser, cus, mFee, budget, size, promo, interest, period, label))
-   
+        return Knn.listTrainCustomer
+
     def readFromFile_Test(name):
-        with open(name, "r") as f:         
+        with open(name, "r") as f:
             for line in f.readlines():
                 if not line.startswith("@") and ',' in line:
                     array = line.split(',')
@@ -101,9 +102,8 @@ class Knn:
                     promo = promoSwitcher[array[5]]
                     interest = float(array[6])
                     period = float(array[7])
-                    label = 0
+                    label = float(array[8].strip())
                     Knn.listTestCustomer.append(Product(ser, cus, mFee, budget, size, promo, interest, period, label))
-                    
                     
                     
     def initializeTrain():
@@ -135,8 +135,21 @@ class Knn:
     def normalizeTest(feaIndex, OriValue):
         normValue = (OriValue - Knn.listTestMin[feaIndex]) / (Knn.listTestMax[feaIndex] - Knn.listTestMin[feaIndex])
         return normValue
+    
+    def randomSelectIntroBinary(self):
+        train_total = list(Knn.listTrainCustomer)
+        # traindata length for intro binary: # 200
+        train_model, test_model = [],[]
+        train_model = np.random.choice(train_total,int(128), replace=False)
+        for row in train_total:
+            if row not in train_model: test_model.append(row)
+            
+        #print("1 before",Knn.listTrainCustomer[0])
+        Knn.listTrainCustomer = train_model
+        #print("2 after", Knn.listTrainCustomer[0])
+        Knn.listTestCustomer = test_model
+        print("test data %:", int(len(train_model)/len(train_total)*100))
         
-
 def cross_validation(k, n, train_file_name):
     # Knn = Knn()
     # Knn.readFromFile_Train(train_file_name)
@@ -264,15 +277,17 @@ def cross_validation(k, n, train_file_name):
         # for row in knn.listTestCustomer:
             #print("TESTOri", row.label)
             #print("TEST",row.predL)
-        mse = 0          
-        for row in Knn.listTestCustomer:
-            mse = mse + (row.label - row.predL)**2
-        mse = mse/(len(Knn.listTestCustomer))
-        print("Accuracy MSE", mse/(len(Knn.listTestCustomer)))
+        acc_mse = 0     
+        for i in range(len(Knn.listTestCustomer)):
+            mse = 0
+            mse = (Knn.listTestCustomer[i].label - Knn.listTestCustomer[i].predL)**2
+            acc_mse += mse
+        avg_mse = 0
+        avg_mse = acc_mse/(len(Knn.listTestCustomer))
+        print("Accuracy MSE", avg_mse)
 
-        print('mse is')
-        print(mse)
-        performance.append(mse)
+        performance.append(avg_mse)
+
     print (performance)
     print (sum(performance) / n)
 
@@ -282,3 +297,4 @@ n = int(sys.argv[2])
 train_file_name = sys.argv[3]
 for i in range(0,3):
     cross_validation(k, n, train_file_name)
+
