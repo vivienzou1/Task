@@ -118,7 +118,7 @@ def get_best_split_feature(dataset, feature_continuous):
                 sub_dataset1, sub_dataset2 = split_continous(dataset, i, value)
                 new_entropy += len(sub_dataset1) / float(len(dataset)) * calculate_entropy(sub_dataset1)
                 new_entropy += len(sub_dataset2) / float(len(dataset)) * calculate_entropy(sub_dataset2)
-                info_gain_ration = (curr_entropy - new_entropy) / curr_entropy
+                info_gain_ration = (curr_entropy - new_entropy)
                 if info_gain_ration >= best_info_gain:
                     best_info_gain = info_gain_ration
                     best_feature = i
@@ -129,7 +129,7 @@ def get_best_split_feature(dataset, feature_continuous):
                 sub_dataset = split_nominal(dataset, i, value)
                 probability = len(sub_dataset) / float(len(dataset))
                 new_entropy += probability * calculate_entropy(sub_dataset)
-            info_gain_ration = (curr_entropy - new_entropy) / curr_entropy
+            info_gain_ration = (curr_entropy - new_entropy)
             if info_gain_ration >= best_info_gain:
                 best_info_gain = info_gain_ration
                 best_feature = i
