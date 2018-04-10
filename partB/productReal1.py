@@ -7,6 +7,7 @@ Created on Mon Apr  2 13:37:49 2018
 import sys
 import numpy as np
 from random import shuffle
+import copy
 
 serSwitcher = {"Loan": 0, "Bank_Account": 1, "CD": 2, "Mortgage": 3, "Fund": 4}
 cusSwitcher = {"Business": 0, "Professional": 1, "Student": 2, "Doctor": 3, "Other": 4}
@@ -44,25 +45,86 @@ class Product:
         [ 0.0, 0.5, 0.4, 1.0 ]
     ])
 
-    def __init__(self, ser, cus, mFee, budget, size, promo, interest, period, label):
-
-        self.ser = ser       
-        self.cus = cus
-        self.mFee = float(mFee)
-        self.budget = float(budget)
-        self.size = size
-        self.promo = promo
-        self.interest = float(interest)
-        self.period = float(period)
-        self.label = float(label)
-        self.sim = float(0)
-        self.predL = float(-1.0)
+    # def __init__(self, line):
+    #
+    #     self.ser = ser
+    #     self.cus = cus
+    #     self.mFee = float(mFee)
+    #     self.budget = float(budget)
+    #     self.size = size
+    #     self.promo = promo
+    #     self.interest = float(interest)
+    #     self.period = float(period)
+    #     self.label = float(label)
+    #     self.sim = float(0)
+    #     self.predL = float(-1.0)
     
     def __str__(self):
         return "serType {} customer {} mFee {} budget {} size {} promo {} interest {} period {} sim {} label {} predicted {}".format \
     (self.ser, self.cus, self.mFee, self.budget, self.size, self.promo, self.interest, self.period, self.sim, self.label, self.predL)
 
-        
+
+# Pram: file_path: string
+# Return: dataset: [[data]], is_real[boolean]
+def load_data(file_path):
+    dataset = []
+    is_real = []
+    with open(file_path, 'r') as f:
+        for line in f.readlines():
+            if len(line.strip()) == 0 or line.startswith("@relation") or line.startswith("@data"):
+                continue
+            elif line.startswith("@attribute"):
+                attr = line.strip()
+                if attr.endswith("real"):
+                    is_real.append(True)
+                else:
+                    is_real.append(False)
+            else:
+                dataset.append(line.replace('\n','').split(','))
+    # print(len(dataset))
+    # print(dataset)
+    # print(is_real)
+    return dataset, is_real
+
+# given a dataset, return a normalized dataset
+
+def normalize(dataset, is_real):
+    normalized = []
+    #make a deep copy of the original dataset
+    copy_dataset = copy.deepcopy(dataset)
+    low, up = calculateMinMax(copy_dataset, is_real)
+    for i in range(len(copy_dataset)):
+        for j in range(len(is_real)):
+            if is_real[j]:
+                (copy_dataset[i])[j] = (float((copy_dataset[i])[j]) - low[j]) / (up[j] - low[j])
+        normalized.append(copy_dataset[i])
+        print(copy_dataset[i])
+    return normalized
+
+def calculateMinMax(dataset, is_real):
+    length = len(is_real)
+    low = [None] * length
+    up = [None] * length
+
+    for i in range(len(dataset)):
+         for j in range(length):
+              if i == 0:
+                  if is_real[j]:
+                      low[j] = float((dataset[i])[j])
+                      up[j] = float((dataset[i])[j])
+
+              else:
+                  if is_real[j]:
+                      low[j] = min(low[j], float((dataset[i])[j]))
+                      up[j] = max(up[j], float((dataset[i])[j]))
+    print(low)
+    print(up)
+    return low, up
+
+
+
+
+
 class Knn:
     'main class to operate all'
     listTrainMin = [None]*8
@@ -151,15 +213,6 @@ class Knn:
         print("test data %:", int(len(train_model)/len(train_total)*100))
         
 def cross_validation(k, n, train_file_name):
-    # Knn = Knn()
-    # Knn.readFromFile_Train(train_file_name)
-    #
-    # Knn.readFromFile_Test(test_file_name)
-    #
-    # Knn.randomSelectIntroBinary()
-    #Knn.randomSelect()
-
-    knn = Knn()
     # Prepare the train_set_total
     whole_set = knn.readFromFile_Train(train_file_name)[:]
     # print(whole_set)
@@ -178,6 +231,7 @@ def cross_validation(k, n, train_file_name):
         # record the min and max of test and train
         Knn.initializeTrain()
         Knn.initializeTest()
+
 
         for x in range(len(Knn.listTrainCustomer)):
             Knn.recordTrainMinMax(2, Knn.listTrainCustomer[x].mFee)
@@ -239,6 +293,7 @@ def cross_validation(k, n, train_file_name):
         #print(Knn.listTrainCustomer[t])
 
         for t in range(len(Knn.listTestCustomer)):
+            a = Knn.listTrainCustomer
             for m in range(len(Knn.listTrainCustomer)):
             # ser, cus, mFee, budget, size, promo, interest, period
                 sim_ser = Product.serTypeDistance[Knn.listTestCustomer[t].ser][Knn.listTrainCustomer[m].ser]
@@ -257,18 +312,17 @@ def cross_validation(k, n, train_file_name):
                 else:
                     sim_overall = 1/((w1*(1-sim_ser) + w2*(1-sim_cus) + w3* dist_mFee+ \
                                      w4* dist_budget+ w5*(1-sim_size) + w6* (1-sim_promo) + w7*dist_interest + w8 * dist_period)**0.5)
-                    a = Knn.listTrainCustomer.copy()
                     a[m].sim = sim_overall
                 #     for row in a:
                 #         print(row)
-                    sor = sorted(a, key=lambda Product:Product.sim, reverse=True)
+            sor = sorted(a, key=lambda Product:Product.sim, reverse=True)
                     # get the nearest 3 distance
-                    near = sor[0:k]
+            near = sor[0:k]
 
-                    revenueSum = 0;
-                    for n in range(0,k):
-                        revenueSum = revenueSum + near[n].label;
-                    Knn.listTestCustomer[t].predL = revenueSum/k;
+            revenueSum = 0;
+            for e in range(0,k):
+                revenueSum = revenueSum + near[e].label;
+            Knn.listTestCustomer[t].predL = revenueSum/k;
 
                     #print(Knn.listTestCustomer[t])
 
@@ -278,12 +332,13 @@ def cross_validation(k, n, train_file_name):
             #print("TESTOri", row.label)
             #print("TEST",row.predL)
         acc_mse = 0     
-        for i in range(len(Knn.listTestCustomer)):
-            mse = 0
-            mse = (Knn.listTestCustomer[i].label - Knn.listTestCustomer[i].predL)**2
+        for q in range(len(Knn.listTestCustomer)):
+            # mse = 0
+            mse = (Knn.listTestCustomer[q].label - Knn.listTestCustomer[q].predL)**2
             acc_mse += mse
-        avg_mse = 0
+        # avg_mse = 0
         avg_mse = acc_mse/(len(Knn.listTestCustomer))
+        print(len(Knn.listTestCustomer))
         print("Accuracy MSE", avg_mse)
 
         performance.append(avg_mse)
@@ -292,9 +347,14 @@ def cross_validation(k, n, train_file_name):
     print (sum(performance) / n)
 
 # main
-k = int(sys.argv[1])
-n = int(sys.argv[2])
-train_file_name = sys.argv[3]
-for i in range(0,3):
-    cross_validation(k, n, train_file_name)
+a = [123]
+print (a[0])
+a[0] = 321
+print (a[0])
+dataset, is_real = load_data("trainProdIntro.real.arff")
+normalize(dataset, is_real)
+# k = int(sys.argv[1])
+# n = int(sys.argv[2])
+# train_file_name = sys.argv[3]
+# cross_validation(k, n, train_file_name)
 

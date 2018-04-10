@@ -164,7 +164,10 @@ def cross_validation(k, n, train_file_name):
     whole_set = knn.readFromFile_Train(train_file_name)[:]
     # print(whole_set)
     shuffle(whole_set)
+    print(len(whole_set))
     test_size = int(len(whole_set) / n)
+    print("test size " + str(test_size))
+
     performance = []
     for i in range(1, n + 1):
         # prepare the test set
@@ -301,6 +304,7 @@ def cross_validation(k, n, train_file_name):
 k = int(sys.argv[1])
 n = int(sys.argv[2])
 train_file_name = sys.argv[3]
-for i in range(0,3):
-    cross_validation(k, n, train_file_name)
+cross_validation(k, n, train_file_name)
+cross_validation(k, n, train_file_name)
+cross_validation(k, n, train_file_name)
 
