@@ -4,6 +4,9 @@
 # ipynb
 *.ipynb
 
+# data
+*.arff
+
 # Result Output
 result.txt
 

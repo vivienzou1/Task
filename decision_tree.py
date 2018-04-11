@@ -251,7 +251,7 @@ if __name__ == "__main__":
     result += "feature_continuous: " + str(feature_continuous) + "\n\n"
     tree = generateTree(dataset, features, feature_continuous)
     # print(datasetset)
-    print json.dumps(tree, indent=4)
+    # print json.dumps(tree, indent=4)
 
     # predict the test set with the trained model
     result += "====== Prediction on the test set ======\n\n"
@@ -271,3 +271,4 @@ if __name__ == "__main__":
     f = open('result.txt','a+')
     f.write(result)
     f.close()  # you can omit in most cases as the destructor will call it
+    print ("Execution done, please see result in result.txt")
