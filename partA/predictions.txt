@@ -1,0 +1,22 @@
+
+this customer: type student, life spend<saving, vac 0.211538 eCredit 0.046512 salary 0.119939 prop 0.240091 class unknown predicted class C1 sim 0.000000
+this customer: type student, life spend>>saving, vac 0.538462 eCredit 0.020349 salary 0.192586 prop 0.154274 class unknown predicted class C1 sim 0.000000
+this customer: type student, life spend<<saving, vac 0.519231 eCredit 0.165698 salary 0.154706 prop 0.067816 class unknown predicted class C1 sim 0.000000
+this customer: type engineer, life spend>saving, vac 0.269231 eCredit 0.110465 salary 0.455670 prop 0.084462 class unknown predicted class C1 sim 0.000000
+this customer: type librarian, life spend<saving, vac 0.019231 eCredit 0.017442 salary 0.375795 prop 0.034632 class unknown predicted class C2 sim 0.000000
+this customer: type librarian, life spend>saving, vac 0.115385 eCredit 0.017442 salary 0.011997 prop 0.086791 class unknown predicted class C2 sim 0.000000
+this customer: type professor, life spend>saving, vac 0.076923 eCredit 0.020349 salary 0.436107 prop 0.076132 class unknown predicted class C2 sim 0.000000
+this customer: type professor, life spend<saving, vac 0.038462 eCredit 0.034884 salary 0.212361 prop 0.020476 class unknown predicted class C2 sim 0.000000
+this customer: type student, life spend<saving, vac 0.153846 eCredit 0.197674 salary 0.686063 prop 0.128298 class unknown predicted class C3 sim 0.000000
+this customer: type student, life spend>saving, vac 0.173077 eCredit 0.186047 salary 0.759229 prop 0.244722 class unknown predicted class C3 sim 0.000000
+this customer: type doctor, life spend>saving, vac 0.115385 eCredit 0.656977 salary 0.940845 prop 0.456181 class unknown predicted class C3 sim 0.000000
+this customer: type doctor, life spend<saving, vac 0.134615 eCredit 0.697674 salary 0.666864 prop 0.570990 class unknown predicted class C3 sim 0.000000
+this customer: type professor, life spend>saving, vac 0.961538 eCredit 0.005814 salary 0.337360 prop 0.181671 class unknown predicted class C5 sim 0.000000
+this customer: type doctor, life spend>saving, vac 0.634615 eCredit 0.139535 salary 0.385099 prop 0.252418 class unknown predicted class C4 sim 0.000000
+this customer: type student, life spend>>saving, vac 0.730769 eCredit 0.107558 salary 0.353965 prop 0.244228 class unknown predicted class C4 sim 0.000000
+this customer: type student, life spend>>saving, vac 0.673077 eCredit 0.156977 salary 0.370051 prop 0.314728 class unknown predicted class C4 sim 0.000000
+this customer: type professor, life spend>>saving, vac 0.634615 eCredit 0.078488 salary 0.437508 prop 0.149308 class unknown predicted class C4 sim 0.000000
+this customer: type librarian, life spend>>saving, vac 0.903846 eCredit 0.093023 salary 0.398072 prop 0.151584 class unknown predicted class C4 sim 0.000000
+this customer: type professor, life spend>>saving, vac 0.980769 eCredit 0.005814 salary 0.526760 prop 0.136093 class unknown predicted class C5 sim 0.000000
+this customer: type engineer, life spend>saving, vac 0.942308 eCredit 0.040698 salary 1.043588 prop 0.070112 class unknown predicted class C5 sim 0.000000
+this customer: type engineer, life spend>>saving, vac 0.942308 eCredit 0.034884 salary 0.482653 prop 0.126649 class unknown predicted class C1 sim 0.000000

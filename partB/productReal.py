@@ -202,7 +202,7 @@ if __name__ == "__main__":
     performance, average = cross_validation(k, n, train_normalized, is_real)
     result += "MSE for each time is " + str(performance) + '\n'
     result += "The average MSE is " + str(average) + '\n'
-
+    result += '\n'
     # result += "\n\n"
     f = open('result.txt','a+')
     f.write(result)
