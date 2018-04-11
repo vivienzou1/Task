@@ -33,6 +33,6 @@ $ python prodReal.py trainProdIntro.real.arff testProdIntro.real.arff 5 10
 
 * Run `decision_tree.py` for Desicion tree Classification, you can via command line:
 ```bash
-$ python decision_tree.py <path_train_set> <path_test_set> <k_folds_for_cross_validation>`
+$ python decision_tree.py trainProdSelection.arff testProdSelection.arff 15
 ```
 Otherwise, use IDE and edit run configuration. 
