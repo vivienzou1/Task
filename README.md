@@ -13,7 +13,10 @@ Python 3.6
 
 implemented in Ipython jupyter notebook:
 
-Run `Knn_Classifier_91%.py` for KNN Classification
+Run `Knn_Classifier_91%.py` for KNN Classification via command line
+```bash
+$ python Knn_Classifier_91%.py
+```
 
 Cross validation is in 80% for training and 20% testing, from `trainProfSelection.arff`; although test code and label prediction is via `testProfSelection.arff`
 
