@@ -156,10 +156,10 @@ def model(w1, w2, w3, w4, w5, w6):
 
 
     Knn.initializeTrain()
-    Knn.readFromFile_Train('trainProdSelection.arff')
+    Knn.readFromFile_Train('../data/trainProdSelection.arff')
 
     Knn.initializeTest()
-    Knn.readFromFile_Test('testProdSelection.arff')
+    Knn.readFromFile_Test('../data/testProdSelection.arff')
 
     Knn.randomSelect()
     

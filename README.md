@@ -29,7 +29,7 @@ Python 3.6
 
 Run `prodBinary.py` for KNN binary label by command line:
 ```bash
-$ python productBinary.py 5 10 trainProdIntro.binary.arff testProdIntro.binary.arff
+$ python productBinary.py <k> <n-folds> ../data/trainProdIntro.real.arff ../data/testProdIntro.real.arff
 ```
 
 ### Real
@@ -41,8 +41,7 @@ Python 3.6
 
 Run `prodReal.py` for KNN real prediction by command line:
 ```bash
-$ python prodReal.py trainProdIntro.real.arff testProdIntro.real.arff 5 10
-```
+$ python productReal.py <k> <n-folds> ../data/trainProdIntro.real.arff ../data/testProdIntro.real.arff
 
 
 ## Decision Tree

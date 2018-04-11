@@ -176,10 +176,10 @@ def cross_validation(k, n, whole_set, is_real):
 
 # main
 if __name__ == "__main__":
-    file_path_train = sys.argv[1]
-    file_path_test = sys.argv[2]
-    k = int(sys.argv[3])
-    n = int(sys.argv[4])
+    k = int(sys.argv[1])
+    n = int(sys.argv[2])
+    file_path_train = sys.argv[3]
+    file_path_test = sys.argv[4]
 
     result = "Summary of Result for productReal" + "\n\n"
     result += "run at " + str(datetime.now()) + "\n\n"

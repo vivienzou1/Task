@@ -18,7 +18,7 @@ def loadData(file_path):
     feature_continuous_global = []
 
 
-    with open(file_path, 'rb') as f:
+    with open(file_path, 'r') as f:
         for line in f.readlines():
             if len(line.strip()) == 0 or line.startswith("@relation") or line.startswith("@data"):
                 continue
