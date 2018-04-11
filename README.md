@@ -45,7 +45,7 @@ $ python prodReal.py trainProdIntro.real.arff testProdIntro.real.arff 5 10
 ## Decision Tree
 Accuracy of part A dataset: 85.5% 
 
-Accuracy of part B datasetB: 95.6%
+Accuracy of part B dataset: 95.6%
 
 Python 2.7
 
