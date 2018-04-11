@@ -6,7 +6,7 @@ All model are produced by `numpy` and read by `arff`, no other package related.
 
 
 ## KNN
-#### Classification
+### Classification
 Accuracy: 91% (weighted) to 90.4% (without weighted)
 Python 3.6
 implemented in Ipython jupyter notebook:
@@ -14,7 +14,7 @@ implemented in Ipython jupyter notebook:
 
 Cross validation is in 80% for training and 20% testing, from `trainProfSelection.arff`; although test code and label prediction is via `testProfSelection.arff`
 
-#### Binary
+### Binary
 Accuracy: 91.25% 
 Average weights, unweighted feature
 Python 3.6
@@ -23,7 +23,7 @@ Python 3.6
 $ python productBinary.py 5 10 trainProdIntro.binary.arff testProdIntro.binary.arff
 ```
 
-#### Real
+### Real
 MSE = 14.89 with convergecy
 weighted feature 
 Python 3.6
