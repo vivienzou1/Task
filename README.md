@@ -28,7 +28,7 @@ $ python productBinary.py 5 10 trainProdIntro.binary.arff testProdIntro.binary.a
 ```
 
 ### Real
-MSE = 14.89 with convergecy
+MSE = 14.89 with convergency
 
 weighted feature 
 
