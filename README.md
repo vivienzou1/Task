@@ -8,7 +8,9 @@ All model are produced by `numpy` and read by `arff`, no other package related.
 ## KNN
 ### Classification
 Accuracy: 91% (weighted) to 90.4% (without weighted)
+
 Python 3.6
+
 implemented in Ipython jupyter notebook:
 * Run `Knn_Classifier_91%.py` for KNN Classification
 
@@ -16,7 +18,9 @@ Cross validation is in 80% for training and 20% testing, from `trainProfSelectio
 
 ### Binary
 Accuracy: 91.25% 
+
 Average weights, unweighted feature
+
 Python 3.6
 * Run `prodBinary.py` for KNN binary label by command line:
 ```bash
@@ -25,7 +29,9 @@ $ python productBinary.py 5 10 trainProdIntro.binary.arff testProdIntro.binary.a
 
 ### Real
 MSE = 14.89 with convergecy
+
 weighted feature 
+
 Python 3.6
 * Run `prodReal.py` for KNN real prediction by command line:
 ```bash
