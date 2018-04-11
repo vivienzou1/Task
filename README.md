@@ -16,14 +16,14 @@ The global accuracy for the KNN classifier is around 91% (weighted) to 90.4% (wi
 
 #### Binary
 The overall accuracy is about 91.25% with average weights.
-* Run `prodBinary.py` for KNN binary label by command line in Python 3.6
+* Run `prodBinary.py` for KNN binary label by command line:
 ```bash
 $ python productBinary.py 5 10 trainProdIntro.binary.arff testProdIntro.binary.arff
 ```
 
 #### Real
 After training the weights to implement weighted feature, the final is about MSE = 14.89 with convergecy. 
-* Run `prodReal.py` for KNN real prediction by command line Python 3.6
+* Run `prodReal.py` for KNN real prediction by command line:
 ```bash
 $ python prodReal.py trainProdIntro.real.arff testProdIntro.real.arff 5 10
 ```
