@@ -53,6 +53,6 @@ Python 2.7
 
 Run `decision_tree.py` for Desicion tree Classification, you can via command line:
 ```bash
-$ python decision_tree.py trainProdSelection.arff testProdSelection.arff 15
+$ python decision_tree.py trainProdSelection.arff testProdSelection.arff <k>
 ```
 Otherwise, use IDE and edit run configuration. 
